@@ -1,0 +1,38 @@
+name: Code PushUp
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+  actions: read
+  pull-requests: write
+
+env:
+  CP_API_KEY: ${{ secrets.CP_API_KEY }}
+
+jobs:
+  code_pushup:
+    runs-on: ubuntu-latest
+    name: Code PushUp
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          cache: npm
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install PyLint
+        run: python -m pip install pylint
+      - name: Install NPM dependencies
+        run: npm ci
+      - name: Code PushUp
+        uses: code-pushup/github-action@v0
